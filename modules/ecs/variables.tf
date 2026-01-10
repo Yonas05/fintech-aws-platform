@@ -1,0 +1,12 @@
+variable "aws_region"             { type = string }
+variable "project_name"           { type = string }
+variable "private_subnet_ids"     { type = list(string) }
+variable "ecs_sg_id"              { type = string }
+variable "frontend_tg_arn"        { type = string }
+variable "frontend_image"         { type = string }
+variable "api_image"              { type = string }
+variable "api_base_url"           { type = string }
+variable "db_host"                { type = string }
+variable "db_name"                { type = string }
+variable "db_username"            { type = string }
+variable "db_password_secret_arn" { type = string }
