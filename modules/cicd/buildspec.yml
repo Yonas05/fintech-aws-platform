@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_FRONTEND
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_API
+  build:
+    commands:
+      - echo Build frontend...
+      - cd frontend && docker build -t $ECR_FRONTEND:latest .
+      - docker push $ECR_FRONTEND:latest
+      - echo Build API...
+      - cd ../api && docker build -t $ECR_API:latest .
+      - docker push $ECR_API:latest
+  post_build:
+    commands:
+      - echo Refresh ECS services...
+      - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_FRONTEND --force-new-deployment
+      - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_API --force-new-deployment
